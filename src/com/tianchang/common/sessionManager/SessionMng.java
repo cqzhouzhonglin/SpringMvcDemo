@@ -22,7 +22,7 @@ public class SessionMng {
     private String username; // 用户姓名
     private String loginName;// 登入名
     private String userType; // 用户类别
-    private Long userId; // 用户id 风光风光风光奶粉歌哪个服奶粉歌哪个服奶粉歌你风光
+    private Long userId; // 用户id
 
     /**
      * @return the username
