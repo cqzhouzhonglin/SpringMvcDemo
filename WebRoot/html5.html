@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>html5.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript">
+	function myCanvas() {
+		var c = document.getElementById("myCanvas");
+		var cxt = c.getContext("2d");
+		cxt.fillStyle = "#FF0000";
+		cxt.fillRect(0, 0, 150, 75);
+	}
+</script>
+</head>
+
+<body onload="myCanvas()">
+	<!-- 视屏文件 -->
+	<!-- 
+		Ogg = 带有 Theora 视频编码和 Vorbis 音频编码的 Ogg 文件
+
+		MPEG4 = 带有 H.264 视频编码和 AAC 音频编码的 MPEG 4 文件
+		
+		WebM = 带有 VP8 视频编码和 Vorbis 音频编码的 WebM 文件
+	 -->
+
+	<video width="320" height="240" controls="controls">
+		<source src="movie.ogg" type="video/ogg">
+		<source src="movie.mp4" type="video/mp4">
+		Your browser does not support the video tag.
+	</video>
+
+	<br>
+	<!-- 音频格式 -->
+
+	<audio controls="controls">
+		<source src="song.ogg" type="audio/ogg">
+		<source src="song.mp3" type="audio/mpeg">
+		Your browser does not support the audio tag.
+	</audio>
+
+	<br>
+	<!--  Canvas绘图 -->
+	<canvas id="myCanvas" width="200" height="100"></canvas>
+	
+	
+	<!--HTML5 Input 类型  -->
+	<form action="../example/html5/demo_form.asp" method="get">
+	Input 类型 - email <input type="email" name="user_email"  required="required" /><br>
+	Input 类型 - url <input type="url" name="user_url" required="required"  /><br>
+	Input 类型 - number <input type="number" name="points" min="1" max="10" /><br>
+	Input 类型 - range<input type="range" name="points" min="1" max="10" /><br>
+	Input 类型 - Date Pickers（数据检出器）: <input type="date" name="user_date" /><br>
+	Input 类型 - search<input type="search" name="search" required="required"  /><br>
+	
+	placeholder 属性
+    placeholder 属性提供一种提示（hint），描述输入域所期待的值。
+	<input type="search" name="user_search"  placeholder="Search phpStudy" /><br>
+	required 属性 <input type="text" name="usr_name" required="required" /><br>
+	<input type="submit" />
+	</form>
+	
+</body>
+</html>

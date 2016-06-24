@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	 <!-- 注解扫描包 -->
+	<context:component-scan base-package="com.tianchang.*">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	 
+	 
+	<!-- 1. 数据源 : DriverManagerDataSource -->
+	<!--创建jdbc数据源,根据 BoneCP 连接池来创建-->  
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+    	<!-- 数据库驱动 -->
+        <property name="driverClass" value="org.gjt.mm.mysql.Driver"/> 
+        <!-- 相应驱动的jdbcUrl,你懂的 -->
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mybatis?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull" />
+        <!-- 数据库的用户名密码 -->
+        <property name="username" value="root" />
+        <property name="password" value="123456" />
+        <!-- 分区数 ，默认值2，最小1，推荐3-4，视应用而定-->
+        <property name="partitionCount" value="2" />
+        <!-- 每个分区最小的连接数 -->
+        <property name="minConnectionsPerPartition" value="2" />
+        <!-- 每个分区最大的连接数 -->
+        <property name="maxConnectionsPerPartition" value="8" />
+        <!-- 设置获取connection超时的时间。这个参数默认为Long.MAX_VALUE;单位：毫秒。 在调用getConnection获取connection时，获取时间超过了这个参数，就视为超时并报异常。 -->
+        <property name="connectionTimeout" value="5000" />
+        
+        <!-- 检查数据库连接池中空闲连接的间隔时间，单位是分，默认值：240，如果要取消则设置为0 -->
+        <property name="idleConnectionTestPeriod" value="60" />
+        <!-- 连接池中未使用的链接最大存活时间，单位是分，默认值：60，如果要永远存活设置为0 -->
+        <property name="idleMaxAge" value="240" />
+        <!-- 每次去拿数据库连接的时候一次性要拿几个,默认值：2 -->
+        <property name="acquireIncrement" value="5" />
+        <!-- 缓存prepared statements的大小，默认值：0 -->
+        <property name="statementCacheSize" value="100" />
+        <!-- 每个分区释放链接助理进程的数量，默认值：3，除非你的一个数据库连接的时间内做了很多工作，不然过多的助理进程会影响你的性能 -->
+        <property name="releaseHelperThreads" value="3" />
+    </bean>
+
+	<!-- 2. mybatis的SqlSession的工厂: SqlSessionFactoryBean dataSource:引用数据源 MyBatis定义数据源,同意加载配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath*:com/tianchang/**/mapper/**Mapper.xml" />
+	</bean>
+
+	
+	<!-- 3. mybatis自动扫描加载Sql映射文件/接口 : MapperScannerConfigurer sqlSessionFactory 
+		basePackage:指定sql映射文件/接口所在的包（自动扫描） -->
+	<!-- 
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.**.dao"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+ 	-->
+ 	
+	
+	<!-- 4. 事务管理 : DataSourceTransactionManager dataSource:引用上面定义的数据源 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 5. 使用声明式事务 transaction-manager：引用上面定义的事务管理器 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!--mybatis Dao  -->
+	<bean id="supperDao" class="com.tianchang.supper.dao.SupperDao"/>
+</beans>
